@@ -1,4 +1,4 @@
-PROJECT = Test03_ADC
+PROJECT = Test04_UART
 
 DIR=/usr/local/arm-cs-tools/bin/
 CC=$(DIR)/arm-none-eabi-gcc
