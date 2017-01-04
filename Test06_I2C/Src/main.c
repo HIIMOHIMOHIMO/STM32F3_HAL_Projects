@@ -60,14 +60,14 @@ static void MX_I2C1_Init(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
-
 /* USER CODE END 0 */
 
 int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-
+	uint8_t read=0;
+	uint8_t address=0x75;//WHO_AM_I
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -94,7 +94,25 @@ int main(void)
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-
+//READ MPU6050(0xD0) WHO_AM_I(0x75)
+		if(HAL_I2C_Master_Transmit(&hi2c1, (uint16_t)0xD0, &address, 1, 1000) != HAL_OK){
+			Error_Handler();
+		}
+		if(HAL_I2C_Master_Receive(&hi2c1, (uint16_t)0xD0, &read, 1, 1000) != HAL_OK){
+			Error_Handler();
+		}
+		if( read == 0x68 ){
+//if 'read' have correct data
+			HAL_GPIO_WritePin(LED1_GPIO_Port,LED1_Pin,GPIO_PIN_SET);	
+		}else{
+//if 'read' have wrong data
+			while(1){
+				HAL_GPIO_WritePin(LED1_GPIO_Port,LED1_Pin,GPIO_PIN_SET);
+				HAL_Delay(200);
+				HAL_GPIO_WritePin(LED1_GPIO_Port,LED1_Pin,GPIO_PIN_RESET);
+				HAL_Delay(50);
+			}
+		}
   }
   /* USER CODE END 3 */
 
@@ -173,7 +191,7 @@ static void MX_I2C1_Init(void)
 
     /**Configure Analogue filter 
     */
-  if (HAL_I2CEx_ConfigAnalogFilter(&hi2c1, I2C_ANALOGFILTER_ENABLE) != HAL_OK)
+  if (HAL_I2CEx_ConfigAnalogFilter(&hi2c1, I2C_ANALOGFILTER_DISABLE) != HAL_OK)
   {
     Error_Handler();
   }
