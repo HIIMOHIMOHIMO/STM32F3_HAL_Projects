@@ -42,6 +42,8 @@ UART_HandleTypeDef huart1;
 DMA_HandleTypeDef hdma_usart1_rx;
 
 /* USER CODE BEGIN PV */
+void put_c(uint8_t *);
+void get_c(uint8_t *);
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE END PV */
 
@@ -58,16 +60,24 @@ static void MX_NVIC_Init(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
+/*uart data receive*/
+uint8_t _buffer[4]={0,0,0,0};
+/**/
 uint8_t aTxBuffer[] = " ****UART_TwoBoards_ComIT****  ****UART_TwoBoards_ComIT****  ****UART_TwoBoards_ComIT**** ";
-enum{RXBUFFSIZE=1};
+enum{RXBUFFSIZE = 5};
 uint8_t RXBuffer[RXBUFFSIZE];
-uint8_t Uartready=0;
+//uint8_t _RXBuffer[RXBUFFSIZE]="a";
+uint8_t Uartready = 0;
 /* USER CODE END 0 */
 
 int main(void)
 {
 
   /* USER CODE BEGIN 1 */
+	uint8_t i = 0;
+	uint8_t getdata[RXBUFFSIZE-1];
+	uint8_t sdata[]="wako";
+	uint8_t btn[13]={0,0,0,0,0,0,0,0,0,0,0,0,0};
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -87,6 +97,7 @@ int main(void)
   MX_NVIC_Init();
 
   /* USER CODE BEGIN 2 */
+	HAL_UART_Receive_DMA(&huart1, (uint8_t *)RXBuffer, RXBUFFSIZE);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -96,27 +107,22 @@ int main(void)
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
-		if(HAL_UART_Transmit_IT(&huart1, (uint8_t*)RXBuffer, sizeof(RXBuffer))!= HAL_OK)
-		{
-		//  Error_Handler();
-		}
-		
-		while (Uartready!=1){
-			HAL_GPIO_TogglePin(LED1_GPIO_Port,LED1_Pin);
-			HAL_Delay(100);
-		}
-		
-		Uartready = 0;
-
-		HAL_UART_Receive_DMA(&huart1, (uint8_t *)RXBuffer, RXBUFFSIZE);
-		
 		while(Uartready != 1){
-			HAL_GPIO_WritePin(LED1_GPIO_Port,LED1_Pin,GPIO_PIN_RESET);
 		}
-		
 		Uartready = 0;
+		get_c(getdata);
+		if(getdata[3]==(getdata[0]+getdata[1]+getdata[2])){
+			//put_c(getdata);
+			btn[0]=getdata[0]&0x01!=0;
+			btn[1]=getdata[0]&0x02!=0;
+			btn[2]=getdata[0]&0x04!=0;
+			btn[3]=getdata[0]&0x08!=0;
+		}
+	if(btn[0]){
+			put_c(sdata);
+	}
 		
-		HAL_GPIO_TogglePin(LED1_GPIO_Port,LED1_Pin);
+		
   }
   /* USER CODE END 3 */
 
@@ -263,11 +269,29 @@ void HAL_UART_TxCpltCallback(UART_HandleTypeDef *UartHandle)
 }
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
 {
+	HAL_GPIO_TogglePin(LED1_GPIO_Port,LED1_Pin);	
 	Uartready = 1;
 }
 void HAL_UART_ErrorCallback(UART_HandleTypeDef *UartHandle)
 {
     Error_Handler();
+}
+void put_c(uint8_t * data){
+	HAL_UART_Transmit_IT(&huart1, data, sizeof(data));
+}
+void get_c(uint8_t * data){
+	int _i=0;
+	if(RXBuffer[0]=='$'){
+		RXBuffer[0] = 0;
+		for( _i=0; _i<sizeof(data); _i++){
+			data[_i] = RXBuffer[_i+1];
+			RXBuffer[_i+1] = 0;
+		}
+	}else{
+		for( _i=0; _i<sizeof(data); _i++){
+			data[_i] = 0;
+		}
+	}
 }
 /* USER CODE END 4 */
 

@@ -1,4 +1,4 @@
-PROJECT = Test01_GPIO
+PROJECT = Test06_I2C
 
 DIR=/usr/local/arm-cs-tools/bin/
 CC=$(DIR)/arm-none-eabi-gcc
