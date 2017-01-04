@@ -27,3 +27,7 @@ Generate PWM test.
 ## Test06_I2C
 
 I2C test.(incomplete)
+
+## Test07_Encoder
+
+Encoder input test with TIM3.
