@@ -35,4 +35,5 @@ Encoder input test with TIM3.
 ## Test08_I2CwithDMA
 
 Read data from I2C sensor.(DMA) <- incomplete
+
 Write data to PC.(UART+DMA)
