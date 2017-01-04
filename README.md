@@ -31,3 +31,8 @@ I2C test.only read WHO_AM_I from MPU6050.
 ## Test07_Encoder
 
 Encoder input test with TIM3.
+
+## Test08_I2CwithDMA
+
+Read data from I2C sensor.(DMA) <- incomplete
+Write data to PC.(UART+DMA)
