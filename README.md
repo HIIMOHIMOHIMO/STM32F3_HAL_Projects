@@ -26,7 +26,7 @@ Generate PWM test.
 
 ## Test06_I2C
 
-I2C test.(incomplete)
+I2C test.only read WHO_AM_I from MPU6050.
 
 ## Test07_Encoder
 
