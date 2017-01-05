@@ -26,7 +26,9 @@ Generate PWM test.
 
 ## Test06_I2C
 
-I2C test.only read WHO_AM_I from MPU6050.
+I2C test.
+
+Read some data and write config from MPU6050.
 
 ## Test07_Encoder
 
@@ -34,6 +36,6 @@ Encoder input test with TIM3.
 
 ## Test08_I2CwithDMA
 
-Read data from I2C sensor.(DMA) <- incomplete
+Read data from I2C.(MPU6050)
 
 Write data to PC.(UART+DMA)
