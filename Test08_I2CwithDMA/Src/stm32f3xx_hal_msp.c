@@ -147,6 +147,12 @@ void HAL_I2C_MspDeInit(I2C_HandleTypeDef* hi2c)
 
     /* Peripheral DMA DeInit*/
     HAL_DMA_DeInit(hi2c->hdmarx);
+
+    /* Peripheral interrupt DeInit*/
+    HAL_NVIC_DisableIRQ(I2C1_EV_IRQn);
+
+    HAL_NVIC_DisableIRQ(I2C1_ER_IRQn);
+
   }
   /* USER CODE BEGIN I2C1_MspDeInit 1 */
 
