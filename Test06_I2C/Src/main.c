@@ -68,6 +68,9 @@ int main(void)
   /* USER CODE BEGIN 1 */
 	uint8_t read=0;
 	uint8_t address=0x75;//WHO_AM_I
+	uint8_t config=0x12;
+	uint8_t set[]={0x1A,0x12};
+	uint8_t dat=0x00;
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -95,16 +98,32 @@ int main(void)
 
   /* USER CODE BEGIN 3 */
 //READ MPU6050(0xD0) WHO_AM_I(0x75)
-		if(HAL_I2C_Master_Transmit(&hi2c1, (uint16_t)0xD0, &address, 1, 1000) != HAL_OK){
-			Error_Handler();
-		}
-		if(HAL_I2C_Master_Receive(&hi2c1, (uint16_t)0xD0, &read, 1, 1000) != HAL_OK){
-			Error_Handler();
-		}
+		HAL_I2C_Mem_Read(&hi2c1,0xD0/*device ID*/,0x75/*WHO_AM_I*/,I2C_MEMADD_SIZE_8BIT/*Memory Address Size*/,&read/*Data Buffer*/,1,10);
 		if( read == 0x68 ){
+//			HAL_GPIO_WritePin(LED1_GPIO_Port,LED1_Pin,GPIO_PIN_SET);
 //if 'read' have correct data
-			HAL_GPIO_WritePin(LED1_GPIO_Port,LED1_Pin,GPIO_PIN_SET);	
-		}else{
+			while(1){
+//if(
+				HAL_I2C_Mem_Write(&hi2c1,0xD0,0x6B,I2C_MEMADD_SIZE_8BIT,&dat,1,10);
+				HAL_I2C_Mem_Read(&hi2c1,0xD0,0x6B,I2C_MEMADD_SIZE_8BIT,&read,1,10);
+
+				HAL_I2C_Mem_Write(&hi2c1,0xD0,0x1a,I2C_MEMADD_SIZE_8BIT,&config,1,10);
+				HAL_I2C_Mem_Read(&hi2c1,0xD0,0x1a,I2C_MEMADD_SIZE_8BIT,&read,1,10);
+				if(read==0x12){
+		//if 'read' have correct data
+					HAL_GPIO_WritePin(LED1_GPIO_Port,LED1_Pin,GPIO_PIN_SET);
+				}else{/*read == 0x12*/
+		//if 'read' have wrong data
+					while(1){
+						HAL_GPIO_WritePin(LED1_GPIO_Port,LED1_Pin,GPIO_PIN_SET);
+						HAL_Delay(50);
+						HAL_GPIO_WritePin(LED1_GPIO_Port,LED1_Pin,GPIO_PIN_RESET);
+						HAL_Delay(200);
+					}
+				}
+			}
+
+		}else{/*read == 0x68*/
 //if 'read' have wrong data
 			while(1){
 				HAL_GPIO_WritePin(LED1_GPIO_Port,LED1_Pin,GPIO_PIN_SET);
@@ -191,7 +210,7 @@ static void MX_I2C1_Init(void)
 
     /**Configure Analogue filter 
     */
-  if (HAL_I2CEx_ConfigAnalogFilter(&hi2c1, I2C_ANALOGFILTER_DISABLE) != HAL_OK)
+  if (HAL_I2CEx_ConfigAnalogFilter(&hi2c1, I2C_ANALOGFILTER_ENABLE) != HAL_OK)
   {
     Error_Handler();
   }
