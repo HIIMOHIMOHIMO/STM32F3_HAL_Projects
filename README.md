@@ -39,3 +39,7 @@ Encoder input test with TIM3.
 Read data from I2C.(MPU6050)
 
 Write data to PC.(UART+DMA)
+
+## Test09_TIMINT
+
+Timer interrupt.(use tim15)
