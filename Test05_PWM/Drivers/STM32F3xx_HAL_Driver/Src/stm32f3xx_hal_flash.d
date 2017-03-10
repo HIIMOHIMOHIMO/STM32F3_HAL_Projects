@@ -15,7 +15,7 @@ Drivers/STM32F3xx_HAL_Driver/Src/stm32f3xx_hal_flash.o: \
  Drivers/STM32F3xx_HAL_Driver/Inc/Legacy/stm32_hal_legacy.h \
  /usr/local/gcc-arm-none-eabi-5_2-2015q4/arm-none-eabi/include/stdio.h \
  /usr/local/gcc-arm-none-eabi-5_2-2015q4/arm-none-eabi/include/_ansi.h \
- /usr/local/gcc-arm-none-eabi-5_2-2015q4/arm-none-eabi/include/newlib.h \
+ /usr/local/gcc-arm-none-eabi-5_2-2015q4/arm-none-eabi/include/newlib-nano/newlib.h \
  /usr/local/gcc-arm-none-eabi-5_2-2015q4/arm-none-eabi/include/sys/config.h \
  /usr/local/gcc-arm-none-eabi-5_2-2015q4/arm-none-eabi/include/machine/ieeefp.h \
  /usr/local/gcc-arm-none-eabi-5_2-2015q4/arm-none-eabi/include/sys/features.h \

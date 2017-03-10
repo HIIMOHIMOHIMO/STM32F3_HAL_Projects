@@ -104,9 +104,10 @@ int main(void)
 //if 'read' have correct data
 			while(1){
 //if(
+				//wakeup sensor
 				HAL_I2C_Mem_Write(&hi2c1,0xD0,0x6B,I2C_MEMADD_SIZE_8BIT,&dat,1,10);
 				HAL_I2C_Mem_Read(&hi2c1,0xD0,0x6B,I2C_MEMADD_SIZE_8BIT,&read,1,10);
-
+				//configure sensor
 				HAL_I2C_Mem_Write(&hi2c1,0xD0,0x1a,I2C_MEMADD_SIZE_8BIT,&config,1,10);
 				HAL_I2C_Mem_Read(&hi2c1,0xD0,0x1a,I2C_MEMADD_SIZE_8BIT,&read,1,10);
 				if(read==0x12){
