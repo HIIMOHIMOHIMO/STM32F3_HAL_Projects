@@ -435,7 +435,7 @@ void sendData(int *Data){
 	TxData[9] = CheckSum;
 	REDEOn();
 	HAL_UART_Transmit_IT(&huart2,TxData,10);
-//	HAL_Delay(1);
+	HAL_Delay(1);
 	REDEOff();
 }
 void REDEOn(){
