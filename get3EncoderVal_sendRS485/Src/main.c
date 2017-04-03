@@ -65,14 +65,28 @@ static void MX_USART2_UART_Init(void);
 /* USER CODE END PFP */
 
 /* USER CODE BEGIN 0 */
+/*--- buffer ---*/
+int _index;
+uint8_t RxData;
+uint8_t RxBuff[5];
+uint16_t databuf[3];
+uint8_t UartReady;
+/*--- define ---*/
 #define true (1)
 #define false (0)
+/*--- Encoder ---*/
 void Encoder_Read_Strat();
 void Encoder_Read_Stop();
 int getTIM1Enc();
 int getTIM2Enc();
 int getTIM3Enc();
 int isChange(int *old,int new);
+/*--- UART ---*/
+void sendData(int *Data);
+void REDEOn();
+void REDEOff();
+void waitRxInterrupt();
+/*--- LED ---*/
 void stateLED(int State);
 void Led0On();
 void Led1On();
@@ -89,8 +103,9 @@ int main(void)
 {
 
   /* USER CODE BEGIN 1 */
-	int Enc1_value=0,Enc2_value=0,Enc3_value=0;
-	int Enc1_old = 0,Enc2_old = 0,Enc3_old = 0;
+	uint16_t Enc1_value=0,Enc2_value=0,Enc3_value=0;
+	uint16_t Enc1_old = 0,Enc2_old = 0,Enc3_old = 0;
+	UartReady = false;
   /* USER CODE END 1 */
 
   /* MCU Configuration----------------------------------------------------------*/
@@ -109,6 +124,7 @@ int main(void)
   MX_USART2_UART_Init();
 
   /* USER CODE BEGIN 2 */
+  HAL_UART_Receive_IT(&huart2, &RxData, 1);
 	Encoder_Read_Strat();
   /* USER CODE END 2 */
 
@@ -116,7 +132,7 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-		stateLED(1);
+		stateLED(2);
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
@@ -124,9 +140,16 @@ int main(void)
 		Enc2_value = getTIM2Enc();
 		Enc3_value = getTIM3Enc();
 
-		if( isChange(&Enc1_old,Enc1_value) != 0) Led2Toggle();
-		if( isChange(&Enc2_old,Enc2_value) != 0) Led0Toggle();	
-		if( isChange(&Enc3_old,Enc3_value) != 0) Led1Toggle();
+//	if( isChange(&Enc1_old,Enc1_value) != 0) Led2Toggle();
+//	if( isChange(&Enc2_old,Enc2_value) != 0) Led0Toggle();	
+//	if( isChange(&Enc3_old,Enc3_value) != 0) Led1Toggle();
+
+		/*--- Send Data ---*/
+		databuf[0] = Enc1_value;
+		databuf[1] = Enc2_value;
+		databuf[2] = Enc3_value;
+		HAL_Delay(100);
+
   }
   /* USER CODE END 3 */
 
@@ -363,6 +386,7 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+/*--- Encoder ---*/
 void Encoder_Read_Strat(){
 	HAL_TIM_Encoder_Start(&htim1,TIM_CHANNEL_ALL);
 	HAL_TIM_Encoder_Start(&htim2,TIM_CHANNEL_ALL);
@@ -391,6 +415,61 @@ int isChange(int *old,int new){
 		return false;
 	}
 }
+/*--- UART ---*/
+void sendData(int *Data){
+	int i;
+	uint8_t TxData[10];
+	uint8_t CheckSum = 0;
+	TxData[0] = '#';
+	TxData[1] = 0xEE;
+	TxData[2] = 0x06;
+	TxData[3] = Data[0] << 0;
+	TxData[4] = Data[0] << 8;
+	TxData[5] = Data[1] << 0;
+	TxData[6] = Data[1] << 8;
+	TxData[7] = Data[2] << 0;
+	TxData[8] = Data[2] << 8;
+	for(i=0; i<9; i++){
+		CheckSum = CheckSum^TxData[i];
+	}
+	TxData[9] = CheckSum;
+	REDEOn();
+	HAL_UART_Transmit_IT(&huart2,TxData,10);
+//	HAL_Delay(1);
+	REDEOff();
+}
+void REDEOn(){
+	HAL_GPIO_WritePin(REDE_GPIO_Port,REDE_Pin,GPIO_PIN_SET);
+}
+void REDEOff(){
+	HAL_GPIO_WritePin(REDE_GPIO_Port,REDE_Pin,GPIO_PIN_RESET);
+}
+/*--- Interrupt ---*/
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef *UartHandle){}
+void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
+{
+  HAL_UART_Receive_IT(&huart2, &RxData, 1);
+	uint8_t Data = RxData;
+	if(_index != 0){
+		RxBuff[_index-1] = Data;
+		_index++;
+		if(_index == 5){
+			_index = 0;
+			if(RxBuff[0]==0xEE && RxBuff[1]==0x01){
+				sendData(databuf);
+			}
+		}
+	}else
+	if(Data == 0x23){
+		_index = 1;
+	}
+}
+void waitRxInterrupt(){
+	while(1){
+		if(RxBuff[0] == 0xEE && RxBuff[1]==0x01)break;
+	}
+}
+/*--- LED ---*/
 void stateLED(int State){
 	if(State == 1){
 		HAL_GPIO_WritePin(StateLED_GPIO_Port,StateLED_Pin,GPIO_PIN_SET);
