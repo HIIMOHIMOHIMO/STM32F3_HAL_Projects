@@ -80,9 +80,9 @@ void Encoder_Read_Stop();
 int getTIM1Enc();
 int getTIM2Enc();
 int getTIM3Enc();
-int isChange(int *old,int new);
+int isChange(int old,int new);
 /*--- UART ---*/
-void sendData(int *Data);
+void sendData(uint16_t *Data);
 void REDEOn();
 void REDEOff();
 void waitRxInterrupt();
@@ -132,7 +132,6 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-		stateLED(2);
   /* USER CODE END WHILE */
 
   /* USER CODE BEGIN 3 */
@@ -140,14 +139,21 @@ int main(void)
 		Enc2_value = getTIM2Enc();
 		Enc3_value = getTIM3Enc();
 
-//	if( isChange(&Enc1_old,Enc1_value) != 0) Led2Toggle();
-//	if( isChange(&Enc2_old,Enc2_value) != 0) Led0Toggle();	
-//	if( isChange(&Enc3_old,Enc3_value) != 0) Led1Toggle();
+		if( isChange(Enc1_old,Enc1_value) != 0) Led2Toggle();
+		if( isChange(Enc2_old,Enc2_value) != 0) Led0Toggle();	
+		if( isChange(Enc3_old,Enc3_value) != 0) Led1Toggle();
+
+		Enc1_old = Enc1_value;
+		Enc2_old = Enc2_value;
+		Enc3_old = Enc3_value;
 
 		/*--- Send Data ---*/
 		databuf[0] = Enc1_value;
 		databuf[1] = Enc2_value;
 		databuf[2] = Enc3_value;
+
+		sendData(databuf);
+
 		HAL_Delay(100);
 
   }
@@ -406,37 +412,36 @@ int getTIM2Enc(){
 int getTIM3Enc(){
 	return TIM3->CNT;
 }
-int isChange(int *old,int new){
-	if(*old != new){
-		*old = new;
+int isChange(int old,int new){
+	if(old != new){
 		return true;
 	}else{
-		*old = new;
 		return false;
 	}
 }
 /*--- UART ---*/
-void sendData(int *Data){
+void sendData(uint16_t *Data){
 	int i;
 	uint8_t TxData[10];
 	uint8_t CheckSum = 0;
 	TxData[0] = '#';
 	TxData[1] = 0xEE;
 	TxData[2] = 0x06;
-	TxData[3] = Data[0] << 0;
-	TxData[4] = Data[0] << 8;
-	TxData[5] = Data[1] << 0;
-	TxData[6] = Data[1] << 8;
-	TxData[7] = Data[2] << 0;
-	TxData[8] = Data[2] << 8;
+	TxData[3] = (uint8_t)(Data[0]&0xFF);
+	TxData[4] = (uint8_t)((Data[0]>>8)&0xFF);
+	TxData[5] = (uint8_t)(Data[1]&0xFF);
+	TxData[6] = (uint8_t)((Data[1]>>8)&0xFF);
+	TxData[7] = (uint8_t)(Data[2]&0xFF);
+	TxData[8] = (uint8_t)((Data[2]>>8)&0xFF);
 	for(i=0; i<9; i++){
 		CheckSum = CheckSum^TxData[i];
 	}
 	TxData[9] = CheckSum;
 	REDEOn();
 	HAL_UART_Transmit_IT(&huart2,TxData,10);
-	HAL_Delay(1);
+	HAL_Delay(3);
 	REDEOff();
+	stateLED(2);
 }
 void REDEOn(){
 	HAL_GPIO_WritePin(REDE_GPIO_Port,REDE_Pin,GPIO_PIN_SET);
@@ -456,7 +461,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
 		if(_index == 5){
 			_index = 0;
 			if(RxBuff[0]==0xEE && RxBuff[1]==0x01){
-				sendData(databuf);
+//				sendData(databuf);
 			}
 		}
 	}else
