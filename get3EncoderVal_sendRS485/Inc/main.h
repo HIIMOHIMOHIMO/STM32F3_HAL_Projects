@@ -43,6 +43,8 @@
 
 #define StateLED_Pin GPIO_PIN_0
 #define StateLED_GPIO_Port GPIOF
+#define Bit1_state_Pin GPIO_PIN_1
+#define Bit1_state_GPIO_Port GPIOF
 #define REDE_Pin GPIO_PIN_4
 #define REDE_GPIO_Port GPIOA
 #define LED0_Pin GPIO_PIN_5
@@ -51,6 +53,24 @@
 #define LED1_GPIO_Port GPIOB
 #define LED2_Pin GPIO_PIN_1
 #define LED2_GPIO_Port GPIOB
+#define Bit2_state_Pin GPIO_PIN_10
+#define Bit2_state_GPIO_Port GPIOA
+#define B7_Pin GPIO_PIN_11
+#define B7_GPIO_Port GPIOA
+#define B6_Pin GPIO_PIN_12
+#define B6_GPIO_Port GPIOA
+#define B5_Pin GPIO_PIN_15
+#define B5_GPIO_Port GPIOA
+#define B4_Pin GPIO_PIN_3
+#define B4_GPIO_Port GPIOB
+#define B3_Pin GPIO_PIN_4
+#define B3_GPIO_Port GPIOB
+#define B2_Pin GPIO_PIN_5
+#define B2_GPIO_Port GPIOB
+#define B1_Pin GPIO_PIN_6
+#define B1_GPIO_Port GPIOB
+#define B0_Pin GPIO_PIN_7
+#define B0_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
