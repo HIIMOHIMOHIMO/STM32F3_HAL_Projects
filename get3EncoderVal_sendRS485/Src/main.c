@@ -35,7 +35,8 @@
 #include "stm32f3xx_hal.h"
 
 /* USER CODE BEGIN Includes */
-
+#define SENDDELAYCOUNT 500
+#define RCVDELAYCOUNT 510
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -157,10 +158,10 @@ int main(void)
 		databuf[1] = Enc2_value;
 		databuf[2] = Enc3_value;
 
-		sendData(databuf);
+//		sendData(databuf);
 		output_cntled();
 
-		HAL_Delay(100);
+		HAL_Delay(10);
 
   }
   /* USER CODE END 3 */
@@ -446,6 +447,7 @@ int isChange(int old,int new){
 /*--- UART ---*/
 void sendData(uint16_t *Data){
 	int i;
+	volatile int j;
 	uint8_t TxData[10];
 	uint8_t CheckSum = 0;
 	TxData[0] = '#';
@@ -462,8 +464,9 @@ void sendData(uint16_t *Data){
 	}
 	TxData[9] = CheckSum;
 	REDEOn();
-	HAL_UART_Transmit_IT(&huart2,TxData,10);
-	HAL_Delay(3);
+	HAL_UART_Transmit(&huart2,TxData,10,1);
+	//HAL_Delay(1);
+	for(j=0;j<SENDDELAYCOUNT;j++);
 	REDEOff();
 	stateLED(2);
 }
@@ -477,6 +480,7 @@ void REDEOff(){
 void HAL_UART_TxCpltCallback(UART_HandleTypeDef *UartHandle){}
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
 {
+	volatile int j=0;
   HAL_UART_Receive_IT(&huart2, &RxData, 1);
 	uint8_t Data = RxData;
 	if(_index != 0){
@@ -485,13 +489,16 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *UartHandle)
 		if(_index == 5){
 			_index = 0;
 			if(RxBuff[0]==0xEE && RxBuff[1]==0x01){
-//				sendData(databuf);
+				//HAL_Delay(1);
+				//for(j=0;j<RCVDELAYCOUNT;j++);
+				sendData(databuf);
 			}
+	
 		}
 	}else
-	if(Data == 0x23){
-		_index = 1;
-	}
+		if(Data == 0x23){
+			_index = 1;
+		}
 }
 void waitRxInterrupt(){
 	while(1){
