@@ -1,0 +1,78 @@
+Configuration	EscControlUnit
+STM32CubeMX 	4.18.0
+Date	05/05/2017
+MCU	STM32F303K8Tx
+
+
+
+PERIPHERALS	MODES	FUNCTIONS	PINS
+SYS	Serial Wire	SYS_JTCK-SWCLK	PA14
+SYS	Serial Wire	SYS_JTMS-SWDIO	PA13
+SYS	SysTick	SYS_VS_Systick	VP_SYS_VS_Systick
+TIM1	PWM Generation CH1	TIM1_CH1	PA8
+TIM1	Output Compare CH2	TIM1_CH2	PA9
+TIM1	Output Compare CH3	TIM1_CH3	PA10
+TIM2	PWM Generation CH1	TIM2_CH1	PA0
+TIM2	PWM Generation CH2	TIM2_CH2	PA1
+TIM2	PWM Generation CH4	TIM2_CH4	PA3
+TIM3	PWM Generation CH1	TIM3_CH1	PA6
+TIM3	PWM Generation CH2	TIM3_CH2	PA4
+TIM3	PWM Generation CH3	TIM3_CH3	PB0
+TIM3	PWM Generation CH4	TIM3_CH4	PB1
+USART1	Asynchronous	USART1_RX	PB7
+USART1	Asynchronous	USART1_TX	PB6
+
+
+
+Pin Nb	PINs	FUNCTIONs	LABELs
+2	PF0 / OSC_IN	GPIO_Output	EV7
+3	PF1 / OSC_OUT	GPIO_Output	EV5
+6	PA0	TIM2_CH1	
+7	PA1	TIM2_CH2	
+9	PA3	TIM2_CH4	
+10	PA4	TIM3_CH2	
+11	PA5	GPIO_Output	EV8
+12	PA6	TIM3_CH1	
+13	PA7	GPIO_Output	EV6
+14	PB0	TIM3_CH3	
+15	PB1	TIM3_CH4	
+18	PA8	TIM1_CH1	
+19	PA9	TIM1_CH2	
+20	PA10	TIM1_CH3	
+21	PA11	GPIO_Output	EV3
+22	PA12	GPIO_Output	EV4
+23	PA13	SYS_JTMS-SWDIO	
+24	PA14	SYS_JTCK-SWCLK	
+26	PB3	GPIO_Output	REDE
+27	PB4	GPIO_Output	EV1
+28	PB5	GPIO_Output	EV2
+29	PB6	USART1_TX	
+30	PB7	USART1_RX	
+
+
+
+SOFTWARE PROJECT
+
+Project Settings : 
+Project Name : EscControlUnit
+Project Folder : /home/wako/workspace/f0/EscControlUnit
+Toolchain / IDE : SW4STM32
+Firmware Package Name and Version : STM32Cube FW_F3 V1.6.0
+
+
+Code Generation Settings : 
+STM32Cube Firmware Library Package : Copy only the necessary library files
+Generate peripheral initialization as a pair of '.c/.h' files per peripheral : No
+Backup previously generated files when re-generating : No
+Delete previously generated files when not re-generated : Yes
+Set all free pins as analog (to optimize the power consumption) : No
+
+
+Toolchains Settings : 
+Compiler Optimizations : Balanced Size/Speed
+
+
+
+
+
+

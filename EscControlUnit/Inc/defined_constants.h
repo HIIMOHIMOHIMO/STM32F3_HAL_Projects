@@ -1,0 +1,35 @@
+#ifndef __DEFINED_CONSTANTS_H__
+#define __DEFINED_CONSTANTS_H__
+
+#define true 1
+#define false 0
+
+#define SENDDELAYCOUNT 500
+#define RCVDELAYCOUNT 510
+
+/*---  0.01 = 200[usec]  ---*/
+#define val_default 0.05
+
+#define val_A0_1		0.05
+#define val_A1_1		0.05
+#define val_A3_1		0.05
+#define val_A4_1		0.05
+#define val_A6_1		0.05
+#define val_A8_1		0.05
+#define val_A9_1		0.05
+#define val_A10_1		0.05
+#define val_B0_1		0.05
+#define val_B1_1		0.05
+
+#define val_A0_2		0.05
+#define val_A1_2	 	0.05
+#define val_A3_2		0.05
+#define val_A4_2		0.05
+#define val_A6_2		0.05
+#define val_A8_2		0.05
+#define val_A9_2		0.05
+#define val_A10_2		0.05
+#define val_B0_2		0.05
+#define val_B1_2		0.05
+
+#endif
