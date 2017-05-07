@@ -44,10 +44,11 @@ Write data to PC.(UART+DMA)
 
 Timer interrupt.(use tim15)
 
-##EscControlUnit
+
+## EscControlUnit
 
 For 2017 Gtop.
 
-##get3EncoderVal_sendRS485
+## get3EncoderVal_sendRS485
 
 For 2017 Gunder.
